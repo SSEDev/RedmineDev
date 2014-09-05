@@ -1,0 +1,21 @@
+/home/bitrock/rubystack/ruby/bin/ruby extconf.rb 
+creating Makefile
+
+make "DESTDIR=" clean
+
+make "DESTDIR="
+compiling stack.c
+compiling buffer.c
+compiling houdini_href_e.c
+compiling rc_render.c
+compiling rc_markdown.c
+compiling houdini_html_e.c
+compiling html_smartypants.c
+compiling autolink.c
+compiling markdown.c
+compiling html.c
+linking shared-object redcarpet.so
+
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 redcarpet.so ./.gem.20140729-6192-1f01qbr
+installing default redcarpet libraries

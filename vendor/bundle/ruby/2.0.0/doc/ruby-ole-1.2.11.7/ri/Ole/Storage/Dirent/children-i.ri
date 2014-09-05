@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"children:ETI""Ole::Storage::Dirent#children;FI"R;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"DThis returns all the children of this +Dirent+. It is filled in;TI"*when the tree structure is recreated.;T:
+@fileI"lib/ole/storage/base.rb;TF@

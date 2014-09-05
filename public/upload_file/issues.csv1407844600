@@ -1,0 +1,4 @@
+id,subject,application,principal,operating department,task difficulty,implement team,stauts,priority,tasker num,remarks
+1,交易架构,DTP,xhlou,业务部,编码实现,埃森哲中软,In Progress,High,14DTP01,无
+2,停牌收就绪,DTP,xhlou,衍生品业务部,编码实现,埃森哲中软,New,Normal,14DTP02,无
+3,期权性能调优,DTP,xhlou,衍生品业务部,未启动,埃森哲中软,New,Normal,14DTP03,无

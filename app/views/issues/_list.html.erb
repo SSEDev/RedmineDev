@@ -1,0 +1,114 @@
+<%= form_tag({}) do -%>
+<%= hidden_field_tag 'back_url', url_for(params), :id => nil %>
+<div class="autoscroll">
+<% if query.name=="2014任务大表" %>
+<table class="list tasklist"> 
+<% else %>
+<table class="list issues">
+<% end %>
+  <thead>
+    <tr>
+      <th class="checkbox hide-when-print">
+        <%= link_to image_tag('toggle_check.png'), {},
+                              :onclick => 'toggleIssuesSelection(this); return false;',
+                              :title => "#{l(:button_check_all)}/#{l(:button_uncheck_all)}" %>
+      </th>
+      <% query.inline_columns.each do |column| %>
+        <%= column_header(column) %>
+      <% end %>
+    </tr>
+  </thead>
+  <% previous_group = false %>
+  <tbody>
+ <% 
+    temp_id = ""
+    flag = 0
+ %>
+  <% issue_list(issues) do |issue, level| -%>
+  
+  <% if @query.grouped? && (group = @query.group_by_column.value(issue)) != previous_group %>
+    <% reset_cycle %>
+    <tr class="group open">
+      <td colspan="<%= query.inline_columns.size + 2 %>">
+        <span class="expander" onclick="toggleRowGroup(this);">&nbsp;</span>
+        <%= group.blank? ? l(:label_none) : column_content(@query.group_by_column, issue) %> <span class="count"><%= @issue_count_by_group[group] %> </span>
+
+        <%= link_to_function("#{l(:button_collapse_all)}/#{l(:button_expand_all)}",
+                             "toggleAllRowGroups(this)", :class => 'toggle-all') %>
+      </td>
+      
+    </tr>
+     
+         
+    <% 
+      if query.name=="2014任务大表" 
+        group_cnt = @issue_count_by_group[group] 
+        
+        if flag==0
+          group_cnt = @i
+          flag =1
+        end
+      end 
+    %>
+    <% previous_group = group %>
+  <% end %>
+  
+  <tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('odd', 'even') %> <%= issue.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
+    <td class="checkbox hide-when-print"><%= check_box_tag("ids[]", issue.id, false, :id => nil) %></td>
+
+    <% if query.name=="2014任务大表" %>
+     <%   
+          n = 0
+          columns = query.inline_columns
+          if temp_id == column_content(columns[1], issue)
+               n=3
+          end
+          temp_id = column_content(columns[1], issue)
+          len = query.inline_columns.size
+          for i in 0..len-1 
+              if @query.grouped?
+                if n==0 && i <5 %>  
+		   <% if i==0 %>
+                   <td align="center" rowspan="<%=group_cnt %>" >
+                      <%= column_content(columns[i], issue) %></td>
+		   <% elsif i==1 %>
+                   <td  align="left" rowspan="<%=group_cnt %>" class="task_project" >
+                      <%= column_content(columns[i], issue) %></td>
+
+		   <% else %>
+                   <td  align="left" rowspan="<%=group_cnt %>" >
+                      <%= column_content(columns[i], issue) %></td>
+		   <% end %>
+                <% elsif i >=5 %>
+		     <% if i==6 %>
+                     	<td align='left' class="task_subject">
+                            <%=column_content(columns[i], issue)%></td>             
+
+		     <% else %>
+                     <td>
+                            <%=column_content(columns[i], issue)%></td>             
+
+	             <% end %>
+                <% end %>
+              <% else %>
+                <td>
+                            <%=column_content(columns[i], issue)%></td>    
+              <% end %>
+         <% end %>
+      <% else %>
+         <%= raw query.inline_columns.map {|column| "<td class=\"#{column.css_classes}\">#{column_content(column, issue)}</td>"}.join %>
+      <% end %>
+
+  </tr>
+  <% @query.block_columns.each do |column|
+       if (text = column_content(column, issue)) && text.present? -%>
+  <tr class="<%= current_cycle %>">
+    <td colspan="<%= @query.inline_columns.size + 1 %>" class="<%= column.css_classes %>"><%= text %></td>
+  </tr>
+  <% end -%>
+  <% end -%>
+  <% end -%>
+  </tbody>
+</table>
+</div>
+<% end -%>
