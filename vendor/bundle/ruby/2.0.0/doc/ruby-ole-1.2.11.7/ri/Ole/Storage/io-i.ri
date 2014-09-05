@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"io:ETI"Ole::Storage#io;FI"R;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"TThe underlying io object to/from which the ole object is serialized, whether we;TI"1should close it, and whether it is writeable;T:
+@fileI"lib/ole/storage/base.rb;TF@

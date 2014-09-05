@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="<%= current_language %>">
+<head>
+<meta charset="utf-8" />
+<title><%=h html_title %></title>
+<meta name="description" content="<%= Redmine::Info.app_name %>" />
+<meta name="keywords" content="issue,bug,tracker" />
+<%= csrf_meta_tag %>
+<%= favicon %>
+<%= stylesheet_link_tag 'reset', :media => 'all' %>
+<%= stylesheet_link_tag 'smoothness/jquery-ui', :media => 'all' %>
+<%= stylesheet_link_tag 'application', :media => 'all' %>
+<%= stylesheet_link_tag 'print', :media => 'print' %>
+<%= stylesheet_link_tag 'rtl', :media => 'all' if l(:direction) == 'rtl' %>
+<!--[if lte IE 6]><%= stylesheet_link_tag 'ie6', :media => 'all' %><![endif]-->
+<!--[if lte IE 7]><%= stylesheet_link_tag 'ie7', :media => 'all' %><![endif]-->
+<!--[if gte IE 8]><![endif]-->
+
+<%= javascript_include_tag 'jquery.min.js' %>
+<%= javascript_include_tag 'jquery-ui.min.js' %>
+<%= javascript_include_tag 'jquery.menu_expand.js' %>
+<%= javascript_tag('jQuery.noConflict();') %>
+<%= javascript_include_tag 'modernizr.min.js' %>
+<%= javascript_heads %>
+<%= heads_for_theme %>
+<%= call_hook :view_layouts_base_html_head %>
+<!-- page specific tags -->
+<%= yield :header_tags -%>
+<%= javascript_heads %>
+</head>
+<body class="<%=h body_css_classes %>">
+<div id="wrapper">
+  <div id="top-menu">
+   <div id="header">
+    <div id="logo"><%= link_to(h(Setting.app_title), home_path) %></div>
+    <div id="top-menu-items">
+    <% if User.current.logged? || !Setting.login_required? %>
+    <div id="search">
+        <%= form_tag({:controller => 'search', :action => 'index', :id => @project}, :method => :get ) do %>
+        <%= hidden_field_tag(controller.default_search_scope, 1, :id => nil) if controller.default_search_scope %>
+        <label for='q'>
+          <%= link_to l(:label_search), {:controller => 'search', :action => 'index', :id => @project}, :accesskey => accesskey(:search) %>:
+        </label>
+        <%= text_field_tag 'q', @question, :size => 16, :class => 'small', :accesskey => accesskey(:quick_search) %>
+         <% end %>
+    </div>
+    <% end %>
+   
+    
+      <ul id="account-nav">
+        
+        <% if User.current.logged? || !Setting.login_required? %>
+        <% main_top_menu_items.each do |item| %>
+            <%= render_menu_node(item) %>
+        <% end %>
+        <% if User.current.logged? %>
+        <li>
+          <%= link_to l(:label_renwuku),'/redmine/projects/a2/issues?query_id=1' %>
+        </li>
+        <% end %>
+        <li class="drop-down">
+            <%= link_to l(:label_project_plural), { :controller => 'projects', :action => 'index' }, :class => "projects" %>
+        </li>
+        
+        <% if more_top_menu_items.present? || User.current.admin? %>
+        <li class="drop-down" id="more-menu">
+          <%= link_to l(:label_administration),{:controller =>'admin',:action =>'index'}, :class=>"more" %>
+        </li>
+        <% end %>
+        <%= render_menu_node(help_menu_item) %>
+        <% end %>
+          <% unless User.current.logged? %>
+            <% if Setting.self_registration? %>
+            <li<%= link_to l(:label_register), { :controller => 'account', :action => 'register' } %></li>           
+            <% end %>
+            <li id="login-menu" class="drop-down last-child">
+              <%= link_to l(:label_login), {:controller => 'account', :action => 'login'}, :class => 'login' %>
+
+            </li>
+          <% else %>
+            <li class="drop-down last-child">
+            <% menu_items_for(:account_menu) do |item| %>
+              <%= render_menu_node(item) %>
+            <% end %>
+            </li>
+           <% end %>
+      </ul>
+    </div>
+    </div>
+    <div id="breadcrumb">
+      <%= page_header_title %>
+    </div>
+  </div>
+  
+
+  <% main_menu = render_main_menu(@project) %>
+  <% if (side_displayed = has_content?(:sidebar) || has_content?(:main_menu) || !main_menu.blank?) %>
+  <% display_sidebar = true %>
+  <% else %>
+  <% display_sidebar = false %>
+  <% end %>
+  <div id="main" class="<%= side_displayed ? '' : "nosidebar" %>">
+    <% if (side_displayed) %>
+      <div id="side-container">
+        <div id="main-menu">
+          <%= main_menu %>
+          <%= yield :main_menu %>
+        </div>
+
+      <% if display_sidebar %>
+        <!-- Sidebar -->
+        <div id="sidebar">
+          <%= yield :sidebar %>
+          <%= call_hook :view_layouts_base_sidebar %>
+        </div>
+      <% end %>
+      </div>
+
+      <%= expand_current_menu %>
+    <% end %>
+    <div class="<%= side_displayed ? '' : "nosidebar" %>" id="content">
+      <%= render_flash_messages %>
+      <%= yield %>
+      <%= call_hook :view_layouts_base_content %>
+      <div style="clear:both;">&nbsp;</div>
+    </div>
+  </div>
+  
+  <div id="footer">
+  <div class="bgl"><div class="bgr">
+    Powered by <%= link_to l(:label_loading), 'http://bitnami.com/stack/redmine' %> &copy; 2006-2014 Jean-Philippe Lang
+  </div></div>
+</div>
+
+<div id="ajax-indicator" style="display:none;"><span><%= l(:label_loading) %></span></div>
+<div id="ajax-modal" style="display:none;"></div>
+
+
+
+</div>
+<%= call_hook :view_layouts_base_body_bottom %>
+</body>
+</html>

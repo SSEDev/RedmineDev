@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"dirents:ETI"Ole::Storage#dirents;FI"R;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"ZThe tree structure in its original flattened form. only valid after #load, or #flush.;T:
+@fileI"lib/ole/storage/base.rb;TF@

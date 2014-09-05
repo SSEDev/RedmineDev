@@ -1,0 +1,28 @@
+<% custom_field_values = @issue.editable_custom_field_values %>
+<div class="splitcontent">
+<div class="splitcontentleft">
+<% i = 0 %>
+<% split_on = (custom_field_values.size / 2.0).ceil - 1 %>
+
+<%= hidden_field_tag "projectId", @project.identifier %>
+
+
+<!-- cann't modify the code here, should add the judgement -->
+<% custom_field_values.each do |value| %>
+	<% if @issue.tracker.name!="Sir" %>
+	  	<p><%= custom_field_tag_with_label_new :issue, value, :required => @issue.required_attribute?(value.custom_field_id) %></p> 
+  	<% else %>
+  		<p><%= custom_field_tag_with_label_issue :issue, value, @issue,:required => @issue.required_attribute?(value.custom_field_id) %></p> 
+  	<% end %>
+<% if i == split_on -%>
+</div><div class="splitcontentright">
+<% end -%>
+<% i += 1 -%>
+<% end -%>
+</div>
+</div>
+
+<div id="hidden_area"></div>
+
+
+
